@@ -28,3 +28,15 @@ export interface AbsenceDisplayedData extends AbsenceWithConflict {
   employeeFullName: string;
   approvalStatus: ApprovalStatus;
 }
+
+
+export interface Filters {
+  employeeId?: string;
+  endDate?: Date;
+  startDate?: Date;
+  approvalStatus?: ApprovalStatus;
+}
+
+export interface Search {
+  filters: Filters;
+}

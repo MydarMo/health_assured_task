@@ -27,19 +27,18 @@ const Table = <T,>(props: TableProps<T>) => {
         <thead>
           <tr>
             {columns.map(
-              ({ accessor, label, order, sortable }, index: number) => {
-                const cl = sortable
-                  ? sortKey === accessor && order === "asc"
-                    ? "up"
-                    : sortKey === accessor && order === "desc"
-                    ? "down"
+              ({ accessor, label, sortable }, index: number) => {
+                const arrow = sortable
+                  ? sortKey === accessor && sortOrder === 'asc' ? 'up'
+                    : sortKey === accessor && sortOrder === "desc"
+                    ? 'down'
                     : "default"
                   : "";
                 return (
                   <th
                     key={index}
                     onClick={() => handleSort(accessor)}
-                    className={cl}
+                    className={arrow}
                   >
                     {label}
                   </th>
@@ -52,7 +51,16 @@ const Table = <T,>(props: TableProps<T>) => {
           {sortedData.map((data, index) => (
             <tr key={index}>
               {columns.map((column, index: number) => {
-                return <td key={index}>{data[column.accessor] as string}</td>;
+                const { accessor, handleDataClick, cell } = column;
+                return (
+                  <td
+                    key={index}
+                    onClick={() => handleDataClick && handleDataClick(data)}
+                    className={handleDataClick ? "clickable" : ""}
+                  >
+                    {cell ? cell(data) : (data[accessor] as string)}
+                  </td>
+                );
               })}
             </tr>
           ))}

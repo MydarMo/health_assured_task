@@ -1,3 +1,5 @@
+import { ReactNode } from "react";
+
 export type SortOrder = "asc" | "desc";
 
 export interface Column<T> {
@@ -5,4 +7,6 @@ export interface Column<T> {
   accessor: keyof T;
   sortable: boolean;
   order?: SortOrder;
+  handleDataClick?: (data: T) => void;
+  cell?: (data: T) => ReactNode;
 }

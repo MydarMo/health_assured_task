@@ -1,4 +1,4 @@
-import { Absence, AbsenceWithConflict } from "../interfaces/absences";
+import { Absence, AbsenceWithConflict, Filters } from "../interfaces/absences";
 import { Conflict } from "../interfaces/conflicts";
 import { fetchData } from "../helpers/fetch-data";
 
@@ -22,9 +22,9 @@ export const getConflictsByAbsenceId = async (
   return conflicts;
 };
 
-export const getAbsencesWithConflicts = async (): Promise<
-  AbsenceWithConflict[]
-> => {
+export const getAbsencesWithConflicts = async (
+  filters?: Filters | null
+): Promise<AbsenceWithConflict[]> => {
   // fetch all absences with conflicts
 
   const absences = await getAbsences();
@@ -36,5 +36,18 @@ export const getAbsencesWithConflicts = async (): Promise<
     })
   );
 
-  return absencesWithConflict;
+  let data;
+
+  if (filters) {
+    data = absencesWithConflict.filter((absence) => {
+      if (filters.employeeId && filters.employeeId !== "") {
+        return absence.employee.id === filters.employeeId;
+      }
+      return true;
+    });
+  } else {
+    data = absencesWithConflict;
+  }
+
+  return data;
 };

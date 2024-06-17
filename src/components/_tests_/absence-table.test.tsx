@@ -1,7 +1,7 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { useAbsencesWithConflicts } from "../../hooks/use-absence-with-conflict";
-import { AbsenceType} from "../../interfaces/absences";
+import { AbsenceType } from "../../interfaces/absences";
 import { AbsenceTable } from "../absence-table";
 
 jest.mock("../../hooks/use-absence-with-conflict");
@@ -31,7 +31,7 @@ const mockAbsences = [
       id: "2ea05a52-4e31-450d-bbc4-5a6c73167d17",
     },
     approved: false,
-    conflicts: true,
+    conflicts: false,
   },
 ];
 
@@ -84,7 +84,9 @@ describe("<AbsenceTable /> Tests", () => {
     render(<AbsenceTable />);
     // Find the h1 element
     const headingElement = screen.getByRole("heading", { level: 1 });
-    const caption = screen.getByText("All Absences with employee information, approval status, dates, and type")
+    const caption = screen.getByText(
+      "All Absences with employee information, approval status, dates, and type"
+    );
 
     // Assert that the h1 element contains the expected text
     expect(headingElement).toBeInTheDocument();
@@ -131,53 +133,52 @@ describe("Table Component", () => {
     expect(screen.getByText("MEDICAL")).toBeInTheDocument();
   });
 
-  it('sorts table data by Start Date', () => {
+  it("sorts table data by Start Date", () => {
     render(<AbsenceTable />);
 
-    fireEvent.click(screen.getByText('Start Date'));
+    fireEvent.click(screen.getByText("Start Date"));
 
-    const rows = screen.getAllByRole('row');
-    expect(rows[1]).toHaveTextContent('28/05/2022');
-    expect(rows[2]).toHaveTextContent('28/04/2022');
+    const rows = screen.getAllByRole("row");
+    expect(rows[1]).toHaveTextContent("28/05/2022");
+    expect(rows[2]).toHaveTextContent("28/04/2022");
   });
 
-  it('sorts table data by End Date', () => {
+  it("sorts table data by End Date", () => {
     render(<AbsenceTable />);
 
-    fireEvent.click(screen.getByText('End Date'));
+    fireEvent.click(screen.getByText("End Date"));
 
-    const rows = screen.getAllByRole('row');
-    expect(rows[1]).toHaveTextContent('06/05/2022');
-    expect(rows[2]).toHaveTextContent('05/06/2022');
+    const rows = screen.getAllByRole("row");
+    expect(rows[1]).toHaveTextContent("06/05/2022");
+    expect(rows[2]).toHaveTextContent("05/06/2022");
   });
 
-   it('sorts table data by Employee Name', () => {
+  it("sorts table data by Employee Name", () => {
     render(<AbsenceTable />);
 
-    fireEvent.click(screen.getByText('Employee Name'));
+    fireEvent.click(screen.getByText("Employee Name"));
 
-    const rows = screen.getAllByRole('row');
-    expect(rows[1]).toHaveTextContent('Rahaf Deckard');
-    expect(rows[2]).toHaveTextContent('Micheal Richard');
+    const rows = screen.getAllByRole("row");
+    expect(rows[1]).toHaveTextContent("Rahaf Deckard");
+    expect(rows[2]).toHaveTextContent("Micheal Richard");
   });
 
-  it('sorts table data by Approval Status', () => {
+  it("sorts table data by Absence Type", () => {
     render(<AbsenceTable />);
 
-    fireEvent.click(screen.getByText('Approval Status'));
+    fireEvent.click(screen.getByText("Absence Type"));
 
-    const rows = screen.getAllByRole('row');
-    expect(rows[1]).toHaveTextContent('NOT APPROVED');
-    expect(rows[2]).toHaveTextContent('APPROVED');
+    const rows = screen.getAllByRole("row");
+    expect(rows[1]).toHaveTextContent("SICKNESS");
+    expect(rows[2]).toHaveTextContent("MEDICAL");
   });
 
-  it('sorts table data by Absence Type', () => {
+  it("shows visual indication of conflicts if conflicts is true", () => {
     render(<AbsenceTable />);
 
-    fireEvent.click(screen.getByText('Absence Type'));
-
-    const rows = screen.getAllByRole('row');
-    expect(rows[1]).toHaveTextContent('SICKNESS');
-    expect(rows[2]).toHaveTextContent('MEDICAL');
+    //check that only absences with conflicts have chips
+    const chips = screen.getAllByTestId("chip");
+    expect(chips.length).toBe(1);
+    expect(chips[0]).toHaveTextContent("Conflicts");
   });
 });
